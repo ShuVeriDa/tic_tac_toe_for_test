@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="styles/styles.css">
+    <title>Tic-tac-toe</title>
+</head>
+<body>
+<div class="wrapper">
+    <header>
+        <h1>
+            <span class="crossText">Крестики</span>
+            <span class="circleText">Нолики</span>
+        </h1>
+    </header>
+    <main>
+        <div class="selectMode">
+            <h2>Выберите режим игры:</h2>
+            <div class="btns">
+                <button id="singlePlayer">Single player</button>
+                <button id="multiplayer">Multiplayer</button>
+            </div>
+            <div class="mods">
+                <button id="easyMode">Easy</button>
+                <button id="hardMode">Hard</button>
+            </div>
+            <div class="selectedModeContainer">
+                <h3 class="selectedMode"></h3>
+            </div>
+
+        </div>
+        <div id="gameBoard"></div>
+        <div class="newGame">
+            <button id="newGame">Начать новую игру</button>
+        </div>
+    </main>
+
+    <footer>
+        <div class="info">
+            <p id="info"></p>
+        </div>
+    </footer>
+
+
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+header h1 {
+    text-align: center;
+}
+
+.crossText {
+    color: red;
+}
+
+.circleText {
+    color: blue;
+}
+
+.info {
+    display: flex;
+    justify-content: center;
+    color: red;
+    font-size: 20px;
+}
+
+.selectMode {
+    margin-bottom: 20px;
+    width: 302px;
+    display: flex;
+    flex-direction: column;
+}
+
+.selectMode h2 {
+    text-align: center;
+}
+
+.btns, .mods {
+    display: flex;
+    justify-content: space-around;
+}
+
+.mods {
+    display: none;
+}
+
+#singlePlayer {
+
+}
+
+#multiplayer {
+
+}
+
+.selectedMode {
+    text-align: center;
+}
+
+#gameBoard {
+    display: none;
+    width: 300px;
+    height: 300px;
+    background: #000;
+    /*display: flex;*/
+    flex-wrap: wrap;
+    border: 1px solid red;
+}
+
+.square {
+    width: 100px;
+    height: 100px;
+    background: #fff;
+    border: 2px solid red;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.circle {
+    height: 90px;
+    width: 90px;
+    border-radius: 50%;
+    border: 15px solid blue;
+    box-sizing: border-box;
+}
+
+.cross {
+    height: 90px;
+    width: 90px;
+    position: relative;
+    transform: rotate(45deg);
+
+}
+
+.cross:before, .cross:after {
+    content: "";
+    position: absolute;
+    background: red;
+}
+
+.cross:before {
+    left: 50%;
+    width: 30%;
+    height: 100%;
+    margin-left: -15%;
+}
+
+.cross:after {
+    top: 50%;
+    height: 30%;
+    width: 100%;
+    margin-top: -15%;
+}
+
+.newGame {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.mods {
+    margin-top: 10px;
+}
+
+#newGame {
+    display: none;
+}
+
+button {
+    border: none;
+    background: #277dee;
+    color: white;
+    height: 30px;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+button:hover {
+    cursor: pointer;
+    background: #0d56b9;
+}
+
