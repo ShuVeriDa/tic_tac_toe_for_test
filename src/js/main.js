@@ -1,3 +1,7 @@
+import {updateBoardColors} from "./ui.js";
+import {loadGame, saveGame} from "./localStorage.js";
+
+
 const gameBoard = document.querySelector("#gameBoard")
 const infoDisplay = document.querySelector("#info")
 const newGameButton = document.querySelector("#newGame");
@@ -9,7 +13,8 @@ const mods = document.querySelector(".mods");
 const easyModeButton = document.querySelector("#easyMode");
 const hardModeButton = document.querySelector("#hardMode");
 
-let startCells = [
+
+export let startCells = [
   '', '', '', '', '', '', '', '', ''
 ]
 
@@ -18,7 +23,7 @@ let mode
 let level
 let message = ''
 let state = 'waiting'
-
+let player = 'computer'
 
 easyModeButton.addEventListener('click', () => {
   level = 'easy'; // Установите режим на "простой"
@@ -32,7 +37,7 @@ hardModeButton.addEventListener('click', () => {
   startSinglePlayerGame();
 });
 
-function setupGame() {
+export function setupGame() {
   multiplayer.addEventListener('click', startMultiplayerGame);
   singlePlayer.addEventListener('click', () => {
     mods.style.display = 'flex'
@@ -41,8 +46,6 @@ function setupGame() {
     newGameButton.style.display = 'none'
     infoDisplay.style.display = 'none'
   });
-  newGameButton.addEventListener("click", startNewGameClearLS);
-
 }
 
 function startSinglePlayerGame() {
@@ -54,6 +57,8 @@ function startSinglePlayerGame() {
   selectedMode.textContent = `Одиночная игра (${level} режим)`;
   createBoard();
   startNewGame();
+
+  newGameButton.addEventListener("click", startNewGame);
 }
 
 function startMultiplayerGame() {
@@ -63,7 +68,7 @@ function startMultiplayerGame() {
   selectedMode.textContent = "Многопользовательская игра";
   createBoard();
   continueGame();
-  loadGame();
+  loadGame(go, state, message);
 
   const savedGameState = localStorage.getItem("gameState");
   if (savedGameState) {
@@ -74,6 +79,8 @@ function startMultiplayerGame() {
   }
 
   infoDisplay.textContent = message;
+
+  newGameButton.addEventListener("click", startNewGameClearLS);
 }
 
 function createBoard() {
@@ -86,7 +93,8 @@ function createBoard() {
   })
 }
 
-function addGo(e) {
+export function addGo(e) {
+
   if (state === 'winCross' || state === "winCircle" || state === 'draw') {
     return
   }
@@ -99,6 +107,27 @@ function addGo(e) {
     updateBoardColors('red')
   }
 
+  if (mode === 'singlePlayer') {
+
+    if (state === 'gameOn' && player === 'computer') {
+      let arr = []
+      console.log(arr)
+      let availableCells = startCells.map((cell, index) => (cell === '') ? index : -1).filter(index => index !== -1);
+      let randomIndex = Math.floor(Math.random() * availableCells.length);
+      let cellIndex = availableCells[randomIndex];
+
+      if(arr.some(item)) {
+        arr.push(cellIndex)
+      }
+
+
+      player = 'user'
+      return;
+    }
+
+    return;
+  }
+
   const goDisplay = document.createElement('div')
   goDisplay.classList.add(go)
   e.target.append(goDisplay)
@@ -109,7 +138,9 @@ function addGo(e) {
 
   checkScore()
 
-  if (mode === 'multiplayer') saveGame();
+  player = 'user'
+
+  if (mode === 'multiplayer') saveGame(go, state, message, mode);
 }
 
 function checkScore() {
@@ -167,13 +198,7 @@ function continueGame() {
   gameBoard.innerHTML = "";
   newGameButton.style.display = 'block'
 
-  startCells.forEach((_cell, i) => {
-    const cellElement = document.createElement("div");
-    cellElement.classList.add("square");
-    cellElement.id = i;
-    cellElement.addEventListener("click", addGo);
-    gameBoard.append(cellElement);
-  });
+  addElement()
 }
 
 function startNewGame() {
@@ -184,92 +209,9 @@ function startNewGame() {
   newGameButton.style.display = 'block'
   gameBoard.style.borderColor = 'red'
 
-  startCells.forEach((_cell, i) => {
-    const cellElement = document.createElement("div");
-    cellElement.classList.add("square");
-    cellElement.id = i;
-    cellElement.addEventListener("click", addGo);
-    gameBoard.append(cellElement);
-  });
+  addElement()
 
   go = "cross";
-}
-
-function saveGame() {
-  console.log(state)
-  const gameState = {
-    cells: [],
-    currentPlayer: go,
-    state: state,
-    mode: mode,
-    message: message
-  };
-
-  const squareElements = document.querySelectorAll(".square");
-  squareElements.forEach((square) => {
-    if (square.firstChild?.classList.contains("cross")) {
-      gameState.cells.push("cross");
-    } else if (square.firstChild?.classList.contains("circle")) {
-      gameState.cells.push("circle");
-    } else {
-      gameState.cells.push("");
-    }
-  });
-
-  localStorage.setItem("gameState", JSON.stringify(gameState));
-}
-
-function loadGame() {
-  const savedGameState = localStorage.getItem("gameState");
-  if (savedGameState) {
-    const gameState = JSON.parse(savedGameState);
-
-    // Восстановление состояния игры
-    startCells.length = 0;
-    startCells.push(...gameState.cells);
-    go = gameState.currentPlayer;
-    state = gameState.state
-    message = gameState.message
-
-    // Восстановление игрового поля
-    const squareElements = document.querySelectorAll(".square");
-    squareElements.forEach((square, i) => {
-      square.innerHTML = "";
-      if (gameState.cells[i] === "cross" || gameState.cells[i] === "circle") {
-        const goDisplay = document.createElement("div");
-        goDisplay.classList.add(gameState.cells[i]);
-        square.appendChild(goDisplay);
-        square.removeEventListener("click", addGo);
-      }
-    });
-  }
-
-  if (state === 'draw') {
-    message = 'Ничья'
-    updateBoardColors('green')
-  }
-  if (state === 'winCross') {
-    message = 'Поздравляю крестик выиграл'
-    updateBoardColors('red')
-  }
-  if (state === 'winCircle') {
-    message = 'Поздравляю нолик выиграл'
-    updateBoardColors('blue')
-  }
-  if (state === 'waiting') {
-    message = "";
-  }
-
-  if(state === 'gameOn') {
-    if(go === 'cross') {
-      message = 'Теперь ходит крестик'
-    }
-    if(go === 'circle') {
-      message = 'Теперь ходит нолик'
-    }
-  }
-
-  infoDisplay.textContent = message;
 }
 
 function checkDraw() {
@@ -287,12 +229,13 @@ function checkDraw() {
   }
 }
 
-function updateBoardColors(color) {
-  const allSquares = document.querySelectorAll('.square');
-  gameBoard.style.borderColor = color;
-  infoDisplay.style.color = color;
-  allSquares.forEach(square => {
-    square.style.borderColor = color;
+function addElement() {
+  startCells.forEach((_cell, i) => {
+    const cellElement = document.createElement("div");
+    cellElement.classList.add("square");
+    cellElement.id = i;
+    cellElement.addEventListener("click", addGo);
+    gameBoard.append(cellElement);
   });
 }
 

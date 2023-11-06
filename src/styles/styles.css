@@ -48,7 +48,8 @@ header h1 {
 }
 
 #singlePlayer {
-
+    background: rgba(117, 115, 115, 0.2);
+    color: black;
 }
 
 #multiplayer {
